@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Aumento</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+    }
+    h1 { margin: 0 0 8px; font-size: 25px; }
+    .subtitle { margin: 0 0 25px; color: #666; }
+    label { display: block; margin: 16px 0 7px; font-weight: bold; }
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: 0;
+      border-radius: 9px;
+      background: #1f6feb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #195bb8; }
+    .resultado {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      background: #eef6ff;
+      border-radius: 10px;
+    }
+    .resultado strong {
+      display: block;
+      font-size: 30px;
+      margin: 5px 0;
+    }
+    .erro { color: #b42318; margin-top: 15px; }
+    .formula {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #eee;
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Calculadora de Aumento</h1>
+    <p class="subtitle">Calcule o aumento percentual entre dois meses.</p>
+
+    <label for="anterior">Mês passado</label>
+    <input id="anterior" type="number" min="0" step="any" placeholder="Ex.: 49">
+
+    <label for="atual">Este mês</label>
+    <input id="atual" type="number" min="0" step="any" placeholder="Ex.: 106">
+
+    <button onclick="calcular()">Calcular aumento</button>
+
+    <div id="erro" class="erro"></div>
+
+    <div id="resultado" class="resultado">
+      <div>Aumento:</div>
+      <strong id="percentual">0%</strong>
+      <div id="detalhes"></div>
+    </div>
+
+    <div class="formula">
+      <b>Fórmula:</b><br>
+      (Este mês − Mês passado) ÷ Mês passado × 100
+    </div>
+  </main>
+
+  <script>
+    function calcular() {
+      const anterior = Number(document.getElementById("anterior").value);
+      const atual = Number(document.getElementById("atual").value);
+      const erro = document.getElementById("erro");
+      const resultado = document.getElementById("resultado");
+
+      erro.textContent = "";
+      resultado.style.display = "none";
+
+      if (anterior <= 0 || atual < 0 || !Number.isFinite(anterior) || !Number.isFinite(atual)) {
+        erro.textContent = "Informe valores válidos. O mês passado deve ser maior que zero.";
+        return;
+      }
+
+      const diferenca = atual - anterior;
+      const percentual = (diferenca / anterior) * 100;
+
+      document.getElementById("percentual").textContent =
+        percentual.toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + "%";
+
+      const sinal = diferenca >= 0 ? "a mais" : "a menos";
+      document.getElementById("detalhes").textContent =
+        `${Math.abs(diferenca).toLocaleString("pt-BR")} documento(s) ${sinal}.`;
+
+      resultado.style.display = "block";
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") calcular();
+    });
+  </script>
+</body>
+</html>
